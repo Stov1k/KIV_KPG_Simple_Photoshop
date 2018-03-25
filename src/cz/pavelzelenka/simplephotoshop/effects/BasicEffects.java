@@ -93,6 +93,60 @@ public class BasicEffects {
 	}
 	
 	/**
+	 * Mozaika s prumerovanim barvy ctverce
+	 * @param g ovladaci prvek kresleni
+	 * @param working pracovni obrazek
+	 * @param width sirka obrazku
+	 * @param height vyska obrazku
+	 * @param precent procento deleni
+	 */
+	public static void mosaicDoublePassEffect(GraphicsContext g, WritableImage working, int width, int height, double precent) {
+		if(precent > 1D) return;
+		if(precent < 0.01) precent = 0.01;
+		PixelReader reader = working.getPixelReader();
+		PixelWriter writer = g.getPixelWriter();
+		int raw = (int) ((double)width * precent);
+		int unit = (raw > 0 ? width/raw : width);
+		if (unit >= width || unit >= height) return;
+		for (int x = 0; x < width; x+=unit) {
+			for (int y = 0; y < height; y+=unit) {
+				int num = 0;
+				int red = 0;
+				int gre = 0;
+				int blu = 0;
+				for (int k = 0; k < unit; k++) {
+					for (int m = 0; m < unit; m++) {
+						if((x + k) < width && (y + m) < height) {
+							Color color = reader.getColor(x + k, y + m);
+							num++;
+							red += color.getRed() * 255;
+							gre += color.getGreen() * 255;
+							blu += color.getBlue() * 255;
+						}
+					}
+				}
+				red = red / num;
+				gre = gre / num;
+				blu = blu / num;
+				if(red > 255) red = 255;
+				if(gre > 255) gre = 255;
+				if(blu > 255) blu = 255;
+				if(red < 0) red = 0;
+				if(gre < 0) gre = 0;
+			    if(blu < 0) blu = 0;
+			    Color newColor = Color.rgb(red, gre, blu);
+				for (int k = 0; k < unit; k++) {
+					for (int m = 0; m < unit; m++) {
+						if((x + k) < width && (y + m) < height) {
+							writer.setColor(x + k, y + m, newColor);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Negativ
 	 * @param g ovladaci prvek kresleni
 	 * @param working pracovni obrazek

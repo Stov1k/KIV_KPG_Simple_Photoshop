@@ -113,86 +113,119 @@ public class Drawing {
 	
 	/**
 	 * Efekt rozmazani
+	 * @param weight matice vahy
+	 * @return cas algoritmu
 	 */
-	public void blurEffect(double[] weight) {
+	public long blurEffect(double[] weight) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
+		long start = System.nanoTime();
 		BasicEffects.blurEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), weight);
+		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
+		return end;
 	}
 	
 	/**
 	 * Efekt cernobileho obrazu
+	 * @return cas algoritmu
 	 */
-	public void blackAndWhiteEffect() {
+	public long blackAndWhiteEffect() {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
+		long start = System.nanoTime();
 		BasicEffects.blackAndWhiteEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
+		return end;
 	}
 	
 	/**
 	 * Efekt tepaneho obrazu
+	 * @return cas algoritmu
 	 */
-	public void embossEffect() {
+	public long embossEffect() {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
+		long start = System.nanoTime();
 		BasicEffects.embossEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
+		return end;
 	}
 	
 	/**
 	 * Efekt negativu
+	 * @return cas algoritmu
 	 */
-	public void negativeEffect() {
+	public long negativeEffect() {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
+		long start = System.nanoTime();
 		BasicEffects.negativeEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
+		return end;
 	}
 	
 	/**
 	 * Efekt sepie
+	 * @param depth hloubka
+	 * @param intesity intenzita
+	 * @return cas algoritmu
 	 */
-	public void sepiaEffect(int depth, int intensity) {
+	public long sepiaEffect(int depth, int intensity) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
+		long start = System.nanoTime();
 		BasicEffects.sepiaEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), depth, intensity);
+		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
+		return end;
 	}
 	
 	/**
 	 * Efekt mozaiky
+	 * @param precent koeficient urcujici pocet ctvercu
+	 * @param doublePass dvojity pruchod
+	 * @return cas algoritmu
 	 */
-	public void mosaicEffect(double precent) {
+	public long mosaicEffect(double precent, boolean doublePass) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
-		BasicEffects.mosaicEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
+		long start = System.nanoTime();
+		if(doublePass) {
+			BasicEffects.mosaicDoublePassEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
+		} else {
+			BasicEffects.mosaicEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
+		}
+		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
+		return end;
 	}
 	
 	/**

@@ -13,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -75,6 +76,9 @@ public class WindowLayout {
 	
 	/** Operace rozmazani */
 	private ToggleButton blurTB = new ToggleButton("Blur");
+	
+	/** Cas operace */
+	private Label timeLabel = new Label("");
 	
 	/**
 	 * Konstruktor
@@ -235,7 +239,8 @@ public class WindowLayout {
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			drawing.blackAndWhiteEffect();
+			long time = drawing.blackAndWhiteEffect();
+			timeLabel.setText("B&W Effect Time: " + toMs(time) + " ms");
 		});
 
 		operationBox.getChildren().addAll(apply);
@@ -249,7 +254,8 @@ public class WindowLayout {
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			drawing.embossEffect();
+			long time = drawing.embossEffect();
+			timeLabel.setText("Emboss Effect Time: " + toMs(time) + " ms");
 		});
 
 		operationBox.getChildren().addAll(apply);
@@ -270,13 +276,16 @@ public class WindowLayout {
 		precent.setMajorTickUnit(0.1);
 		precent.setMinorTickCount(2);
 		precent.setBlockIncrement(0.01);
+		CheckBox doublePass = new CheckBox("Double Pass");
+		doublePass.setMaxWidth(200);
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			drawing.mosaicEffect(precent.getValue());
+			long time = drawing.mosaicEffect(precent.getValue(), doublePass.isSelected());
+			timeLabel.setText("Mosaic Effect Time: " + toMs(time) + " ms");
 		});
 
-		operationBox.getChildren().addAll(precentLabel, precent, apply);
+		operationBox.getChildren().addAll(precentLabel, precent, doublePass, apply);
 	}
 	
 	/**
@@ -287,7 +296,8 @@ public class WindowLayout {
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			drawing.negativeEffect();
+			long time = drawing.negativeEffect();
+			timeLabel.setText("Negative Effect Time: " + toMs(time) + " ms");
 		});
 
 		operationBox.getChildren().addAll(apply);
@@ -321,7 +331,8 @@ public class WindowLayout {
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			drawing.sepiaEffect((int)depth.getValue(), (int)intensity.getValue());
+			long time = drawing.sepiaEffect((int)depth.getValue(), (int)intensity.getValue());
+			timeLabel.setText("Sepia Effect Time: " + toMs(time) + " ms");
 		});
 
 		operationBox.getChildren().addAll(depthLabel, depth, intensityLabel, intensity, apply);
@@ -367,13 +378,23 @@ public class WindowLayout {
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			drawing.blurEffect(new double[]{
+			long time = drawing.blurEffect(new double[]{
 					weight1.getValue(),weight4.getValue(),weight7.getValue(),
 					weight2.getValue(),weight5.getValue(),weight8.getValue(),
 					weight3.getValue(),weight6.getValue(),weight9.getValue()});
+			timeLabel.setText("Blur Effect Time: " + toMs(time) + " ms");
 		});
 
 		operationBox.getChildren().addAll(weightLabel, weightGrid, apply);
+	}
+	
+	/**
+	 * Prevod nanosekund na milisekundy
+	 * @param ns nanosekundy
+	 * @return milisekundy
+	 */
+	public long toMs(long ns) {
+		return ns / 1000000;
 	}
 	
 	/**
@@ -384,10 +405,11 @@ public class WindowLayout {
 		HBox hBox = new HBox();
 		hBox.setAlignment(Pos.CENTER_LEFT);
 		hBox.setPadding(new Insets(5D, 5D, 5D, 5D));
+		hBox.setSpacing(5D);
 		Label resolutionLabel = new Label("Image resolution: " + (int) drawing.getImageWidth() + "×" + (int) drawing.getImageHeight());
 		drawing.widthProperty().addListener((observable, oldValue, newValue) -> resolutionLabel.setText("Image resolution: " + (int) drawing.getImageWidth() + "×" + (int) drawing.getImageHeight()));
 		drawing.heightProperty().addListener((observable, oldValue, newValue) -> resolutionLabel.setText("Image resolution: " + (int) drawing.getImageWidth() + "×" + (int) drawing.getImageHeight()));
-		hBox.getChildren().add(resolutionLabel);
+		hBox.getChildren().addAll(resolutionLabel, timeLabel);
 		return hBox;
 	}
 	
