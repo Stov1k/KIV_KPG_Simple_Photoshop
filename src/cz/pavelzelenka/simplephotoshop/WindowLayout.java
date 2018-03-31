@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
@@ -25,6 +26,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -51,7 +53,7 @@ public class WindowLayout {
 	private Drawing drawing;
 	
 	/** Panel operaci */
-	private VBox operationsPane = new VBox();
+	private ToolBar operationsPane = new ToolBar();
 	
 	/** Panel moznosti operace */
 	private VBox operationBox = new VBox();
@@ -158,10 +160,11 @@ public class WindowLayout {
 		sepiaTB.setToggleGroup(operationsGroup);
 		sepiaTB.setMaxWidth(200);
 		
-		operationsPane.getChildren().addAll(blurTB, bwTB, embossTB, mosaicTB, negativeTB, sepiaTB);
-		operationsPane.setSpacing(5D);
+		operationsPane.getItems().addAll(blurTB, bwTB, embossTB, mosaicTB, negativeTB, sepiaTB);
+		operationsPane.setOrientation(Orientation.VERTICAL);
+		operationsPane.setMaxWidth(5000D);
+		operationsPane.setMaxHeight(5000D);
 		operationsPane.setPadding(new Insets(5D,5D,5D,5D));
-		operationsPane.setAlignment(Pos.TOP_CENTER);
 		operationsPane.setStyle("-fx-base: #9BE8BC; -fx-background-color: #D1F5E0; -fx-border-color: #9BE8BC;");
 		
 		vBox.getChildren().addAll(operationsPane, operationBox, getUndoPane());
