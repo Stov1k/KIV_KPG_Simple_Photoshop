@@ -10,11 +10,16 @@ import javafx.collections.ObservableList;
  */
 public enum KernelMatrix {
 	BLUR("Blur", new double[] {0.1111, 0.1111, 0.1111, 0.1111, 0.1111, 0.1111, 0.1111, 0.1111, 0.1111}),
-	GAUSSIAN_BLUR("Gaussian blur", new double[] {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625}),
+	GAUSSIAN_BLUR("Gaussian Blur", new double[] {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625}),
 	SHARPEN("Sharpen", new double[] {0, -1, 0, -1, 5, -1, 0, -1, 0}),
+	EMBOSS("Emboss", new double[] {-2, -1, 0, -1, 1, 1, 0, 1, 2}),
 	EDGE_DETECTION_1("Edge Detection 1", new double[] {0, 1, 0, 1, -4, 1, 0, 1, 0}),
 	EDGE_DETECTION_2("Edge Detection 2", new double[] {1, 0, -1, 0, 0, 0, -1, 0, 1}),
-	EDGE_DETECTION_3("Edge Detection 3", new double[] {-1, -1, -1, -1, 8, -1, -1, -1, -1});
+	EDGE_DETECTION_3("Edge Detection 3", new double[] {-1, -1, -1, -1, 8, -1, -1, -1, -1}),
+	TOP_SOBEL("Top Sobel", new double[] {1, 2, 1, 0, 0, 0, -1, -2, -1}),
+	RIGHT_SOBEL("Right Sobel", new double[] {-1, 0, 1, -2, 0, 2, -1, 0, 1}),
+	BOTTOM_SOBEL("Bottom Sobel", new double[] {-1, -2, -1, 0, 0, 0, 1, 2, 1}),
+	LEFT_SOBEL("Left Sobel", new double[] {1, 0, -1, 2, 0, -2, 1, 0, -1});
 	
 	/** nazev */
 	public final String name;
