@@ -6,6 +6,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import cz.pavelzelenka.simplephotoshop.effects.KernelMatrix;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
@@ -15,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -76,8 +78,8 @@ public class WindowLayout {
 	/** Operace vytvoreni sepie */
 	private ToggleButton sepiaTB = new ToggleButton("Sepia");
 	
-	/** Operace rozmazani */
-	private ToggleButton blurTB = new ToggleButton("Blur");
+	/** Operace masky */
+	private ToggleButton kernelTB = new ToggleButton("Kernel");
 	
 	/** Cas operace */
 	private Label timeLabel = new Label("");
@@ -136,9 +138,9 @@ public class WindowLayout {
 		operationBox.setSpacing(5D);
 		operationBox.setPadding(new Insets(5D,5D,5D,5D));
 		
-		blurTB.setTooltip(new Tooltip("Blur"));
-		blurTB.setToggleGroup(operationsGroup);
-		blurTB.setMaxWidth(200);
+		kernelTB.setTooltip(new Tooltip("Kernel"));
+		kernelTB.setToggleGroup(operationsGroup);
+		kernelTB.setMaxWidth(200);
 		
 		bwTB.setTooltip(new Tooltip("Black and White"));
 		bwTB.setToggleGroup(operationsGroup);
@@ -160,7 +162,7 @@ public class WindowLayout {
 		sepiaTB.setToggleGroup(operationsGroup);
 		sepiaTB.setMaxWidth(200);
 		
-		operationsPane.getItems().addAll(blurTB, bwTB, embossTB, mosaicTB, negativeTB, sepiaTB);
+		operationsPane.getItems().addAll(kernelTB, bwTB, embossTB, mosaicTB, negativeTB, sepiaTB);
 		operationsPane.setOrientation(Orientation.VERTICAL);
 		operationsPane.setMaxWidth(5000D);
 		operationsPane.setMaxHeight(5000D);
@@ -179,8 +181,8 @@ public class WindowLayout {
 		operationsGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
 			if(newValue != null) {
 				operationBox.setStyle("-fx-base: #AAB8ED; -fx-background-color: #DAE8F0; -fx-border-color: #AAB8ED;");
-				if(newValue.equals(blurTB)) {
-					blurEffectOptions();
+				if(newValue.equals(kernelTB)) {
+					kernelEffectOptions();
 				} else if(newValue.equals(bwTB)) {
 						blackWhiteEffectOptions();
 				} else if(newValue.equals(embossTB)) {
@@ -342,53 +344,24 @@ public class WindowLayout {
 	}
 	
 	/**
-	 * Obsluha efektu rozmazani
+	 * Obsluha efektu pouziti masky
 	 */
-	public void blurEffectOptions() {
+	public void kernelEffectOptions() {
 		operationBox.getChildren().clear();
-		Label weightLabel = new Label("Weight");
-		GridPane weightGrid = new GridPane();
-		weightGrid.setHgap(2D);
-		weightGrid.setVgap(2D);
-		weightGrid.setStyle("-fx-font-size: 11px;");
-		Spinner<Integer> weight1 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight2 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight3 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight4 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight5 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight6 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight7 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight8 = new Spinner<Integer>(0, 255, 9);
-		Spinner<Integer> weight9 = new Spinner<Integer>(0, 255, 9);
-		weightGrid.add(weight1, 0, 0);
-		weightGrid.add(weight2, 1, 0);
-		weightGrid.add(weight3, 2, 0);
-		weightGrid.add(weight4, 0, 1);
-		weightGrid.add(weight5, 1, 1);
-		weightGrid.add(weight6, 2, 1);
-		weightGrid.add(weight7, 0, 2);
-		weightGrid.add(weight8, 1, 2);
-		weightGrid.add(weight9, 2, 2);
-		weight1.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight2.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight3.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight4.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight5.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight6.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight7.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight8.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
-		weight9.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL);
+		Label weightLabel = new Label("Kernel");
+		ChoiceBox<KernelMatrix> kernelSelection = new ChoiceBox<KernelMatrix>();
+		kernelSelection.getItems().addAll(KernelMatrix.getDefaultList());
+		kernelSelection.getSelectionModel().select(0);
+		kernelSelection.setMaxWidth(200);
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			long time = drawing.blurEffect(new double[]{
-					weight1.getValue(),weight4.getValue(),weight7.getValue(),
-					weight2.getValue(),weight5.getValue(),weight8.getValue(),
-					weight3.getValue(),weight6.getValue(),weight9.getValue()});
-			timeLabel.setText("Blur Effect Time: " + toMs(time) + " ms");
+			double[] weight = kernelSelection.getSelectionModel().getSelectedItem().matrix;
+			long time = drawing.kernelEffect(weight);
+			timeLabel.setText("Kernel Effect Time: " + toMs(time) + " ms");
 		});
 
-		operationBox.getChildren().addAll(weightLabel, weightGrid, apply);
+		operationBox.getChildren().addAll(weightLabel, kernelSelection, apply);
 	}
 	
 	/**

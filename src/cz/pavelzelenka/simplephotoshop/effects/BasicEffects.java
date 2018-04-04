@@ -207,14 +207,14 @@ public class BasicEffects {
 	}
 	
 	/**
-	 * Rozmazani
+	 * Maska
 	 * @param g ovladaci prvek kresleni
 	 * @param working pracovni obrazek
 	 * @param width sirka obrazku
 	 * @param height vyska obrazku
 	 * @param weight vaha
 	 */
-	public static void blurEffect(GraphicsContext g, WritableImage working, int width, int height, double[] weight) {
+	public static void kernelEffect(GraphicsContext g, WritableImage working, int width, int height, double[] weight) {
 		PixelReader reader = working.getPixelReader();
 		PixelWriter writer = g.getPixelWriter();
 		for (int x = 1; x < width-1; x++) {
@@ -225,15 +225,16 @@ public class BasicEffects {
 						color[m+1][n+1] = reader.getColor(x+m, y+n);
 					}
 				}
+				
 				int wei = 0;
 				int red = 0;
 				int gre = 0;
 				int blu = 0;
 				for(int m = 0; m < 3; m++) {
 					for(int n = 0; n < 3; n++) {
-						red += (int) (color[m][n].getRed() * 255 / weight[wei]);
-						gre += (int) (color[m][n].getGreen() * 255 / weight[wei]);
-						blu += (int) (color[m][n].getBlue() * 255 / weight[wei]);
+						red += (int) (color[m][n].getRed() * 255 * weight[wei]);
+						gre += (int) (color[m][n].getGreen() * 255 * weight[wei]);
+						blu += (int) (color[m][n].getBlue() * 255 * weight[wei]);
 						wei++;
 					}
 				}

@@ -112,18 +112,18 @@ public class Drawing {
 	}
 	
 	/**
-	 * Efekt rozmazani
+	 * Efekt pouziti smasky
 	 * @param weight matice vahy
 	 * @return cas algoritmu
 	 */
-	public long blurEffect(double[] weight) {
+	public long kernelEffect(double[] weight) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
 		long start = System.nanoTime();
-		BasicEffects.blurEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), weight);
+		BasicEffects.kernelEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), weight);
 		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
