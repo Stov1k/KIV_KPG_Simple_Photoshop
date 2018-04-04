@@ -93,6 +93,52 @@ public class BasicEffects {
 	}
 	
 	/**
+	 * Mozaika (teckovana)
+	 * @param g ovladaci prvek kresleni
+	 * @param working pracovni obrazek
+	 * @param width sirka obrazku
+	 * @param height vyska obrazku
+	 * @param precent procento deleni
+	 * @param distribution exponent rozmisteni barvy pro teckovani
+	 */
+	public static void mosaicDottedEffect(GraphicsContext g, WritableImage working, int width, int height, double precent, double distribution) {
+		if(precent > 1D) return;
+		if(precent < 0.01) precent = 0.01;
+		PixelReader reader = working.getPixelReader();
+		PixelWriter writer = g.getPixelWriter();
+		int raw = (int) ((double)width * precent);
+		int unit = (raw > 0 ? width/raw : width);
+		if (unit >= width || unit >= height) return;
+		for (int x = 0; x < width; x+=unit) {
+			for (int y = 0; y < height; y+=unit) {
+				Color color = reader.getColor(x, y);
+				for (int k = 0; k < unit; k++) {
+					for (int m = 0; m < unit; m++) {
+						if((x + k) < width && (y + m) < height) {
+							double h = (unit/2D);								// polovicni velikost dilku
+							double hk = Math.abs(h-k);							// vzdalenost od stredu (na sirku k)
+							double ck = 1 - Math.pow((hk / h), distribution);	// hodnota od 0 - 1 (pro sirku)
+							double hm = Math.abs(h-m);							// vzdalenost od stredu (na vysku m)
+							double cm = 1 - Math.pow((hm / h), distribution);	// hodnota od 0 - 1 (pro vysku)
+							int red = (int) (color.getRed()*ck*cm*255);
+							int gre = (int) (color.getGreen()*ck*cm*255);
+							int blu = (int) (color.getBlue()*ck*cm*255);
+							if(red > 255) red = 255;
+							if(gre > 255) gre = 255;
+							if(blu > 255) blu = 255;
+							if(red < 0) red = 0;
+							if(gre < 0) gre = 0;
+						    if(blu < 0) blu = 0;
+							Color newColor = Color.rgb(red, gre, blu);
+							writer.setColor(x + k, y + m, newColor);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Mozaika s prumerovanim barvy ctverce
 	 * @param g ovladaci prvek kresleni
 	 * @param working pracovni obrazek
@@ -138,6 +184,76 @@ public class BasicEffects {
 				for (int k = 0; k < unit; k++) {
 					for (int m = 0; m < unit; m++) {
 						if((x + k) < width && (y + m) < height) {
+							writer.setColor(x + k, y + m, newColor);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Mozaika s prumerovanim barvy ctverce (teckovana)
+	 * @param g ovladaci prvek kresleni
+	 * @param working pracovni obrazek
+	 * @param width sirka obrazku
+	 * @param height vyska obrazku
+	 * @param precent procento deleni
+	 * @param distribution exponent rozmisteni barvy pro teckovani
+	 */
+	public static void mosaicDoublePassDottedEffect(GraphicsContext g, WritableImage working, int width, int height, double precent, double distribution) {
+		if(precent > 1D) return;
+		if(precent < 0.01) precent = 0.01;
+		PixelReader reader = working.getPixelReader();
+		PixelWriter writer = g.getPixelWriter();
+		int raw = (int) ((double)width * precent);
+		int unit = (raw > 0 ? width/raw : width);
+		if (unit >= width || unit >= height) return;
+		for (int x = 0; x < width; x+=unit) {
+			for (int y = 0; y < height; y+=unit) {
+				int num = 0;
+				int red = 0;
+				int gre = 0;
+				int blu = 0;
+				for (int k = 0; k < unit; k++) {
+					for (int m = 0; m < unit; m++) {
+						if((x + k) < width && (y + m) < height) {
+							Color color = reader.getColor(x + k, y + m);
+							num++;
+							red += color.getRed() * 255;
+							gre += color.getGreen() * 255;
+							blu += color.getBlue() * 255;
+						}
+					}
+				}
+				red = red / num;
+				gre = gre / num;
+				blu = blu / num;
+				if(red > 255) red = 255;
+				if(gre > 255) gre = 255;
+				if(blu > 255) blu = 255;
+				if(red < 0) red = 0;
+				if(gre < 0) gre = 0;
+			    if(blu < 0) blu = 0;
+			    Color tempColor = Color.rgb(red, gre, blu);
+				for (int k = 0; k < unit; k++) {
+					for (int m = 0; m < unit; m++) {
+						if((x + k) < width && (y + m) < height) {
+							double h = (unit/2D);								// polovicni velikost dilku
+							double hk = Math.abs(h-k);							// vzdalenost od stredu (na sirku k)
+							double ck = 1 - Math.pow((hk / h),distribution);	// hodnota od 0 - 1 (pro sirku)
+							double hm = Math.abs(h-m);							// vzdalenost od stredu (na vysku m)
+							double cm = 1 - Math.pow((hm / h),distribution);	// hodnota od 0 - 1 (pro vysku)
+							int newR = (int) (tempColor.getRed()*ck*cm*255);
+							int newG = (int) (tempColor.getGreen()*ck*cm*255);
+							int newB = (int) (tempColor.getBlue()*ck*cm*255);
+							if(newR > 255) newR = 255;
+							if(newG > 255) newG = 255;
+							if(newB > 255) newB = 255;
+							if(newR < 0) newR = 0;
+							if(newG < 0) newG = 0;
+						    if(newB < 0) newB = 0;
+							Color newColor = Color.rgb(newR, newG, newB);
 							writer.setColor(x + k, y + m, newColor);
 						}
 					}

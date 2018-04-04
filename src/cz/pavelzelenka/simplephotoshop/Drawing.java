@@ -211,6 +211,29 @@ public class Drawing {
 	 * @return cas algoritmu
 	 */
 	public long mosaicEffect(double precent, boolean doublePass) {
+		return mosaicEffect(precent, doublePass, false);
+	}
+	
+	/**
+	 * Efekt mozaiky
+	 * @param precent koeficient urcujici pocet ctvercu
+	 * @param doublePass dvojity pruchod
+	 * @param dotted teckovany
+	 * @return cas algoritmu
+	 */
+	public long mosaicEffect(double precent, boolean doublePass, boolean dotted) {
+		return mosaicEffect(precent, doublePass, dotted, 1D);
+	}
+	
+	/**
+	 * Efekt mozaiky
+	 * @param precent koeficient urcujici pocet ctvercu
+	 * @param doublePass dvojity pruchod
+	 * @param dotted teckovany
+	 * @param distribution exponent rozmisteni barvy pro teckovani
+	 * @return cas algoritmu
+	 */
+	public long mosaicEffect(double precent, boolean doublePass, boolean dotted, double distribution) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
@@ -218,9 +241,17 @@ public class Drawing {
 		// uprava pracovniho obrazu
 		long start = System.nanoTime();
 		if(doublePass) {
-			BasicEffects.mosaicDoublePassEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
+			if(dotted) {
+				BasicEffects.mosaicDoublePassDottedEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent, distribution);
+			} else {
+				BasicEffects.mosaicDoublePassEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
+			}
 		} else {
-			BasicEffects.mosaicEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
+			if(dotted) {
+				BasicEffects.mosaicDottedEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent, distribution);
+			} else {
+				BasicEffects.mosaicEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
+			}
 		}
 		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu

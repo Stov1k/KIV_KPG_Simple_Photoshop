@@ -276,21 +276,24 @@ public class WindowLayout {
 		precent.setMin(0.01);
 		precent.setMax(0.50);
 		precent.setValue(0.05);
-		precent.setShowTickLabels(false);
-		precent.setShowTickMarks(false);
-		precent.setMajorTickUnit(0.1);
-		precent.setMinorTickCount(2);
 		precent.setBlockIncrement(0.01);
 		CheckBox doublePass = new CheckBox("Double Pass");
 		doublePass.setMaxWidth(200);
+		CheckBox dotted = new CheckBox("Dotted");
+		dotted.setMaxWidth(200);
+		Label distributionLabel = new Label("Distribution");
+		Slider distribution = new Slider(); 
+		distribution.setMin(0.25);
+		distribution.setMax(4);
+		distribution.setValue(1);
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			long time = drawing.mosaicEffect(precent.getValue(), doublePass.isSelected());
+			long time = drawing.mosaicEffect(precent.getValue(), doublePass.isSelected(), dotted.isSelected(), distribution.getValue());
 			timeLabel.setText("Mosaic Effect Time: " + toMs(time) + " ms");
 		});
 
-		operationBox.getChildren().addAll(precentLabel, precent, doublePass, apply);
+		operationBox.getChildren().addAll(precentLabel, precent, doublePass, dotted, distributionLabel, distribution, apply);
 	}
 	
 	/**
