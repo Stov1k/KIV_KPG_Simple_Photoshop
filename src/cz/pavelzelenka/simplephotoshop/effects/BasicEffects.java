@@ -225,7 +225,6 @@ public class BasicEffects {
 						color[m+1][n+1] = reader.getColor(x+m, y+n);
 					}
 				}
-				
 				int wei = 0;
 				int red = 0;
 				int gre = 0;
