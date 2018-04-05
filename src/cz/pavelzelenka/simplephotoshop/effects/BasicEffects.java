@@ -120,7 +120,7 @@ public class BasicEffects {
 							double n = 1;
 							if(rounded) {
 								double sx = (double)h - (double)k;		// smerovy vektor
-								double sy = (double)m - (double)h;		// smerovy vektor
+								double sy = (double)h - (double)m;		// smerovy vektor
 								double d = Math.sqrt(sx*sx + sy*sy);	// delka smeroveho vektoru
 								n = 1 - Math.pow((d / h), distribution);
 							} else {
@@ -254,7 +254,7 @@ public class BasicEffects {
 							double n = 1;
 							if(rounded) {
 								double sx = (double)h - (double)k;		// smerovy vektor
-								double sy = (double)m - (double)h;		// smerovy vektor
+								double sy = (double)h - (double)m;		// smerovy vektor
 								double d = Math.sqrt(sx*sx + sy*sy);	// delka smeroveho vektoru
 								n = 1 - Math.pow((d / h), distribution);
 							} else {
