@@ -23,6 +23,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
@@ -279,21 +280,25 @@ public class WindowLayout {
 		precent.setBlockIncrement(0.01);
 		CheckBox doublePass = new CheckBox("Double Pass");
 		doublePass.setMaxWidth(200);
+		Separator separator = new Separator();
+		separator.setMaxWidth(200);
 		CheckBox dotted = new CheckBox("Dotted");
 		dotted.setMaxWidth(200);
+		CheckBox rounded = new CheckBox("Rounded");
+		rounded.setMaxWidth(200);
 		Label distributionLabel = new Label("Distribution");
 		Slider distribution = new Slider(); 
 		distribution.setMin(0.25);
-		distribution.setMax(4);
+		distribution.setMax(10);
 		distribution.setValue(1);
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			long time = drawing.mosaicEffect(precent.getValue(), doublePass.isSelected(), dotted.isSelected(), distribution.getValue());
+			long time = drawing.mosaicEffect(precent.getValue(), doublePass.isSelected(), dotted.isSelected(), rounded.isSelected(), distribution.getValue());
 			timeLabel.setText("Mosaic Effect Time: " + toMs(time) + " ms");
 		});
 
-		operationBox.getChildren().addAll(precentLabel, precent, doublePass, dotted, distributionLabel, distribution, apply);
+		operationBox.getChildren().addAll(precentLabel, precent, doublePass, separator, dotted, rounded, distributionLabel, distribution, apply);
 	}
 	
 	/**

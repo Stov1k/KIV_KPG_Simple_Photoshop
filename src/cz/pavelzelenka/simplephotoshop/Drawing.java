@@ -208,32 +208,12 @@ public class Drawing {
 	 * Efekt mozaiky
 	 * @param precent koeficient urcujici pocet ctvercu
 	 * @param doublePass dvojity pruchod
-	 * @return cas algoritmu
-	 */
-	public long mosaicEffect(double precent, boolean doublePass) {
-		return mosaicEffect(precent, doublePass, false);
-	}
-	
-	/**
-	 * Efekt mozaiky
-	 * @param precent koeficient urcujici pocet ctvercu
-	 * @param doublePass dvojity pruchod
 	 * @param dotted teckovany
-	 * @return cas algoritmu
-	 */
-	public long mosaicEffect(double precent, boolean doublePass, boolean dotted) {
-		return mosaicEffect(precent, doublePass, dotted, 1D);
-	}
-	
-	/**
-	 * Efekt mozaiky
-	 * @param precent koeficient urcujici pocet ctvercu
-	 * @param doublePass dvojity pruchod
-	 * @param dotted teckovany
+	 * @param rounded zakulaceni
 	 * @param distribution exponent rozmisteni barvy pro teckovani
 	 * @return cas algoritmu
 	 */
-	public long mosaicEffect(double precent, boolean doublePass, boolean dotted, double distribution) {
+	public long mosaicEffect(double precent, boolean doublePass, boolean dotted, boolean rounded, double distribution) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
@@ -242,13 +222,13 @@ public class Drawing {
 		long start = System.nanoTime();
 		if(doublePass) {
 			if(dotted) {
-				BasicEffects.mosaicDoublePassDottedEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent, distribution);
+				BasicEffects.mosaicDoublePassDottedEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent, rounded, distribution);
 			} else {
 				BasicEffects.mosaicDoublePassEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
 			}
 		} else {
 			if(dotted) {
-				BasicEffects.mosaicDottedEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent, distribution);
+				BasicEffects.mosaicDottedEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent, rounded, distribution);
 			} else {
 				BasicEffects.mosaicEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), precent);
 			}

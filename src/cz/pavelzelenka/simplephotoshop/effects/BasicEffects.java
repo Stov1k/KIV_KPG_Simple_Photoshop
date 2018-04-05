@@ -99,9 +99,10 @@ public class BasicEffects {
 	 * @param width sirka obrazku
 	 * @param height vyska obrazku
 	 * @param precent procento deleni
+	 * @param rounded zakulaceni
 	 * @param distribution exponent rozmisteni barvy pro teckovani
 	 */
-	public static void mosaicDottedEffect(GraphicsContext g, WritableImage working, int width, int height, double precent, double distribution) {
+	public static void mosaicDottedEffect(GraphicsContext g, WritableImage working, int width, int height, double precent, boolean rounded, double distribution) {
 		if(precent > 1D) return;
 		if(precent < 0.01) precent = 0.01;
 		PixelReader reader = working.getPixelReader();
@@ -116,13 +117,22 @@ public class BasicEffects {
 					for (int m = 0; m < unit; m++) {
 						if((x + k) < width && (y + m) < height) {
 							double h = (unit/2D);								// polovicni velikost dilku
-							double hk = Math.abs(h-k);							// vzdalenost od stredu (na sirku k)
-							double ck = 1 - Math.pow((hk / h), distribution);	// hodnota od 0 - 1 (pro sirku)
-							double hm = Math.abs(h-m);							// vzdalenost od stredu (na vysku m)
-							double cm = 1 - Math.pow((hm / h), distribution);	// hodnota od 0 - 1 (pro vysku)
-							int red = (int) (color.getRed()*ck*cm*255);
-							int gre = (int) (color.getGreen()*ck*cm*255);
-							int blu = (int) (color.getBlue()*ck*cm*255);
+							double n = 1;
+							if(rounded) {
+								double sx = (double)h - (double)k;		// smerovy vektor
+								double sy = (double)m - (double)h;		// smerovy vektor
+								double d = Math.sqrt(sx*sx + sy*sy);	// delka smeroveho vektoru
+								n = 1 - Math.pow((d / h), distribution);
+							} else {
+								double hk = Math.abs(h-k);							// vzdalenost od stredu (na sirku k)
+								double ck = 1 - Math.pow((hk / h), distribution);	// hodnota od 0 - 1 (pro sirku)
+								double hm = Math.abs(h-m);							// vzdalenost od stredu (na vysku m)
+								double cm = 1 - Math.pow((hm / h), distribution);	// hodnota od 0 - 1 (pro vysku)
+								n = ck * cm;
+							}
+							int red = (int) (color.getRed()*n*255);
+							int gre = (int) (color.getGreen()*n*255);
+							int blu = (int) (color.getBlue()*n*255);
 							if(red > 255) red = 255;
 							if(gre > 255) gre = 255;
 							if(blu > 255) blu = 255;
@@ -199,9 +209,10 @@ public class BasicEffects {
 	 * @param width sirka obrazku
 	 * @param height vyska obrazku
 	 * @param precent procento deleni
+	 * @param rounded zakulaceni
 	 * @param distribution exponent rozmisteni barvy pro teckovani
 	 */
-	public static void mosaicDoublePassDottedEffect(GraphicsContext g, WritableImage working, int width, int height, double precent, double distribution) {
+	public static void mosaicDoublePassDottedEffect(GraphicsContext g, WritableImage working, int width, int height, double precent, boolean rounded, double distribution) {
 		if(precent > 1D) return;
 		if(precent < 0.01) precent = 0.01;
 		PixelReader reader = working.getPixelReader();
@@ -240,13 +251,22 @@ public class BasicEffects {
 					for (int m = 0; m < unit; m++) {
 						if((x + k) < width && (y + m) < height) {
 							double h = (unit/2D);								// polovicni velikost dilku
-							double hk = Math.abs(h-k);							// vzdalenost od stredu (na sirku k)
-							double ck = 1 - Math.pow((hk / h),distribution);	// hodnota od 0 - 1 (pro sirku)
-							double hm = Math.abs(h-m);							// vzdalenost od stredu (na vysku m)
-							double cm = 1 - Math.pow((hm / h),distribution);	// hodnota od 0 - 1 (pro vysku)
-							int newR = (int) (tempColor.getRed()*ck*cm*255);
-							int newG = (int) (tempColor.getGreen()*ck*cm*255);
-							int newB = (int) (tempColor.getBlue()*ck*cm*255);
+							double n = 1;
+							if(rounded) {
+								double sx = (double)h - (double)k;		// smerovy vektor
+								double sy = (double)m - (double)h;		// smerovy vektor
+								double d = Math.sqrt(sx*sx + sy*sy);	// delka smeroveho vektoru
+								n = 1 - Math.pow((d / h), distribution);
+							} else {
+								double hk = Math.abs(h-k);							// vzdalenost od stredu (na sirku k)
+								double ck = 1 - Math.pow((hk / h), distribution);	// hodnota od 0 - 1 (pro sirku)
+								double hm = Math.abs(h-m);							// vzdalenost od stredu (na vysku m)
+								double cm = 1 - Math.pow((hm / h), distribution);	// hodnota od 0 - 1 (pro vysku)
+								n = ck * cm;
+							}
+							int newR = (int) (tempColor.getRed()*n*255);
+							int newG = (int) (tempColor.getGreen()*n*255);
+							int newB = (int) (tempColor.getBlue()*n*255);
 							if(newR > 255) newR = 255;
 							if(newG > 255) newG = 255;
 							if(newB > 255) newB = 255;
