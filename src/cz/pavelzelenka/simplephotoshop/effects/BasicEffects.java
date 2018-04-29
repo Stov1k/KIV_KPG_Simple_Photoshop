@@ -45,8 +45,7 @@ public class BasicEffects {
 		PixelReader sobelReader = sobel.getPixelReader();
 		PixelReader workingReader = working.getPixelReader();
 		PixelWriter writer = g.getPixelWriter();
-		g.getCanvas().snapshot(null, sobel);
-		sobelEffect(g, sobel, width, height);
+		sobelEffect(g, working, width, height);
 		g.getCanvas().snapshot(null, sobel);
 		negativeEffect(g, sobel, width, height);
 		g.getCanvas().snapshot(null, sobel);
