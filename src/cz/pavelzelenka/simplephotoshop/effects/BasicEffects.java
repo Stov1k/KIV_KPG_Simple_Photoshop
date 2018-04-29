@@ -34,6 +34,58 @@ public class BasicEffects {
 	}
 	
 	/**
+	 * Sobeluv filtr
+	 * @param g ovladaci prvek kresleni
+	 * @param working pracovni obrazek
+	 * @param width sirka obrazku
+	 * @param height vyska obrazku
+	 */
+	public static void sobelEffect(GraphicsContext g, WritableImage working, int width, int height) {
+		WritableImage topSobel = new WritableImage((int)working.getWidth(),(int)working.getHeight());
+		WritableImage rightSobel = new WritableImage((int)working.getWidth(),(int)working.getHeight());
+		WritableImage bottomSobel = new WritableImage((int)working.getWidth(),(int)working.getHeight());
+		WritableImage leftSobel = new WritableImage((int)working.getWidth(),(int)working.getHeight());
+		PixelReader topSobelReader = topSobel.getPixelReader();
+		PixelReader rightSobelReader = rightSobel.getPixelReader();
+		PixelReader bottomSobelReader = bottomSobel.getPixelReader();
+		PixelReader leftSobelReader = leftSobel.getPixelReader();
+		PixelWriter writer = g.getPixelWriter();
+		kernelEffect(g, working, width, height, new double[] {1, 2, 1, 0, 0, 0, -1, -2, -1});
+		g.getCanvas().snapshot(null, topSobel);
+		kernelEffect(g, working, width, height, new double[] {-1, 0, 1, -2, 0, 2, -1, 0, 1});
+		g.getCanvas().snapshot(null, rightSobel);
+		kernelEffect(g, working, width, height, new double[] {-1, -2, -1, 0, 0, 0, 1, 2, 1});
+		g.getCanvas().snapshot(null, bottomSobel);
+		kernelEffect(g, working, width, height, new double[] {1, 0, -1, 2, 0, -2, 1, 0, -1});
+		g.getCanvas().snapshot(null, leftSobel);
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				Color colorTS = topSobelReader.getColor(x, y);
+				Color colorRS = rightSobelReader.getColor(x, y);
+				Color colorBS = bottomSobelReader.getColor(x, y);
+				Color colorLS = leftSobelReader.getColor(x, y);
+				int redTS = (int) (colorTS.getRed() * 255);
+				int greTS = (int) (colorTS.getGreen() * 255);
+				int bluTS = (int) (colorTS.getBlue() * 255);
+				int redRS = (int) (colorRS.getRed() * 255);
+				int greRS = (int) (colorRS.getGreen() * 255);
+				int bluRS = (int) (colorRS.getBlue() * 255);
+				int redBS = (int) (colorBS.getRed() * 255);
+				int greBS = (int) (colorBS.getGreen() * 255);
+				int bluBS = (int) (colorBS.getBlue() * 255);
+				int redLS = (int) (colorLS.getRed() * 255);
+				int greLS = (int) (colorLS.getGreen() * 255);
+				int bluLS = (int) (colorLS.getBlue() * 255);
+				int redMax = Math.max(redLS, Math.max(redBS, Math.max(redTS, redRS)));
+				int greMax = Math.max(greLS, Math.max(greBS, Math.max(greTS, greRS)));
+				int bluMax = Math.max(bluLS, Math.max(bluBS, Math.max(bluTS, bluRS)));
+				Color newColor = Color.rgb(redMax, greMax, bluMax);
+				writer.setColor(x, y, newColor);
+			}
+		}
+	}
+	
+	/**
 	 * Vytepat obraz
 	 * @param g ovladaci prvek kresleni
 	 * @param working pracovni obrazek
@@ -48,8 +100,8 @@ public class BasicEffects {
 				Color color = reader.getColor(x, y);
 				Color neighborn = reader.getColor(x+1, y+1);
 				int red = (int) ((color.getRed() - neighborn.getRed() + 0.5) * 255);
-				int gre = (int) ((color.getGreen( ) - neighborn.getGreen( ) + 0.5) * 255);
-				int blu = (int) ((color.getBlue( ) - neighborn.getBlue( ) + 0.5) * 255);
+				int gre = (int) ((color.getGreen() - neighborn.getGreen() + 0.5) * 255);
+				int blu = (int) ((color.getBlue() - neighborn.getBlue() + 0.5) * 255);
 				if(red > 255) red = 255;
 				if(gre > 255) gre = 255;
 				if(blu > 255) blu = 255;

@@ -16,6 +16,7 @@ public enum KernelMatrix {
 	EDGE_DETECTION_1("Edge Detection 1", new double[] {0, 1, 0, 1, -4, 1, 0, 1, 0}),
 	EDGE_DETECTION_2("Edge Detection 2", new double[] {1, 0, -1, 0, 0, 0, -1, 0, 1}),
 	EDGE_DETECTION_3("Edge Detection 3", new double[] {-1, -1, -1, -1, 8, -1, -1, -1, -1}),
+	SOBEL("Sobel", null),
 	TOP_SOBEL("Top Sobel", new double[] {1, 2, 1, 0, 0, 0, -1, -2, -1}),
 	RIGHT_SOBEL("Right Sobel", new double[] {-1, 0, 1, -2, 0, 2, -1, 0, 1}),
 	BOTTOM_SOBEL("Bottom Sobel", new double[] {-1, -2, -1, 0, 0, 0, 1, 2, 1}),

@@ -364,8 +364,13 @@ public class WindowLayout {
 		Button apply = new Button("Apply");
 		apply.setMaxWidth(200);
 		apply.setOnAction(action -> {
-			double[] weight = kernelSelection.getSelectionModel().getSelectedItem().matrix;
-			long time = drawing.kernelEffect(weight);
+			long time = 0L;
+			if(kernelSelection.getSelectionModel().getSelectedItem().equals(KernelMatrix.SOBEL)) {
+				time = drawing.sobelEffect();	// specialni pripad pro sobeluv filtr
+			} else {
+				double[] weight = kernelSelection.getSelectionModel().getSelectedItem().matrix;
+				time = drawing.kernelEffect(weight);
+			}
 			timeLabel.setText("Kernel Effect Time: " + toMs(time) + " ms");
 		});
 
