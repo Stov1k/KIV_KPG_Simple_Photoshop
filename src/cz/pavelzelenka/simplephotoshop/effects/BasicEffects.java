@@ -40,6 +40,42 @@ public class BasicEffects {
 	 * @param width sirka obrazku
 	 * @param height vyska obrazku
 	 */
+	public static void negativeSobelEffect(GraphicsContext g, WritableImage working, int width, int height) {
+		WritableImage sobel = new WritableImage((int)working.getWidth(),(int)working.getHeight());
+		PixelReader sobelReader = sobel.getPixelReader();
+		PixelReader workingReader = working.getPixelReader();
+		PixelWriter writer = g.getPixelWriter();
+		g.getCanvas().snapshot(null, sobel);
+		sobelEffect(g, sobel, width, height);
+		g.getCanvas().snapshot(null, sobel);
+		negativeEffect(g, sobel, width, height);
+		g.getCanvas().snapshot(null, sobel);
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				Color colorS = sobelReader.getColor(x, y).darker();
+				Color colorW = workingReader.getColor(x, y);
+				int redS = (int) (colorS.getRed() * 255);
+				int greS = (int) (colorS.getGreen() * 255);
+				int bluS = (int) (colorS.getBlue() * 255);
+				int redW = (int) (colorW.getRed() * 255);
+				int greW = (int) (colorW.getGreen() * 255);
+				int bluW = (int) (colorW.getBlue() * 255);
+				int redMin = Math.min(redS, redW);
+				int greMin = Math.min(greS, greW);
+				int blueMin = Math.min(bluS, bluW);
+				Color newColor = Color.rgb(redMin, greMin, blueMin);
+				writer.setColor(x, y, newColor);
+			}
+		}
+	}
+	
+	/**
+	 * Sobeluv filtr
+	 * @param g ovladaci prvek kresleni
+	 * @param working pracovni obrazek
+	 * @param width sirka obrazku
+	 * @param height vyska obrazku
+	 */
 	public static void sobelEffect(GraphicsContext g, WritableImage working, int width, int height) {
 		WritableImage topSobel = new WritableImage((int)working.getWidth(),(int)working.getHeight());
 		WritableImage rightSobel = new WritableImage((int)working.getWidth(),(int)working.getHeight());

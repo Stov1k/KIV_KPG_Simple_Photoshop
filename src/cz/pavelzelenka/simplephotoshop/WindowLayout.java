@@ -366,7 +366,9 @@ public class WindowLayout {
 		apply.setOnAction(action -> {
 			long time = 0L;
 			if(kernelSelection.getSelectionModel().getSelectedItem().equals(KernelMatrix.SOBEL)) {
-				time = drawing.sobelEffect();	// specialni pripad pro sobeluv filtr
+				time = drawing.sobelEffect(false);	// specialni pripad pro sobeluv filtr
+			} else if(kernelSelection.getSelectionModel().getSelectedItem().equals(KernelMatrix.NEGATIVE_SOBEL)) {
+				time = drawing.sobelEffect(true);	// specialni pripad pro sobeluv filtr
 			} else {
 				double[] weight = kernelSelection.getSelectionModel().getSelectedItem().matrix;
 				time = drawing.kernelEffect(weight);

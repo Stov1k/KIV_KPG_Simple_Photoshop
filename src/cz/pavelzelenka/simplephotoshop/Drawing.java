@@ -134,14 +134,18 @@ public class Drawing {
 	 * Efekt sobelova filtru
 	 * @return cas algoritmu
 	 */
-	public long sobelEffect() {
+	public long sobelEffect(boolean negative) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
 		undoEnable.set(true);
 		// uprava pracovniho obrazu
 		long start = System.nanoTime();
-		BasicEffects.sobelEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		if(negative) {
+			BasicEffects.negativeSobelEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		} else {
+			BasicEffects.sobelEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		}
 		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
