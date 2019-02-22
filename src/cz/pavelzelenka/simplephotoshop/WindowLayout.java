@@ -26,14 +26,12 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Slider;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -74,7 +72,7 @@ public class WindowLayout {
 	private ToggleButton mosaicTB = new ToggleButton("Mosaic");
 	
 	/** Operace vytvoreni negativu */
-	private ToggleButton negativeTB = new ToggleButton("Negative");
+	private ToggleButton negativeTB = new ToggleButton("Sandbox effects");
 	
 	/** Operace vytvoreni sepie */
 	private ToggleButton sepiaTB = new ToggleButton("Sepia");
@@ -114,7 +112,7 @@ public class WindowLayout {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = new Menu("File");
 		MenuItem openMI = new MenuItem("Open");
-		openMI.setOnAction(action -> handleOpen());
+		openMI.setOnAction(action -> handleOpenPrimaryImg());
 		MenuItem saveAsMI = new MenuItem("Save As...");
 		saveAsMI.setOnAction(action -> handleSaveAs());
 		MenuItem closeMI = new MenuItem("Close");
@@ -306,14 +304,66 @@ public class WindowLayout {
 	 */
 	public void negativeEffectOptions() {
 		operationBox.getChildren().clear();
-		Button apply = new Button("Apply");
-		apply.setMaxWidth(200);
-		apply.setOnAction(action -> {
+		Button applyNeg = new Button("Apply Negative");
+		Button applyYCbCr = new Button("Apply YCbCr");
+		Button applyRGB = new Button("Apply RGB");
+		Button applyDilation = new Button("Apply Dilation");
+		Button applyErosion = new Button("Apply Erosion");
+		Button applySubstraction = new Button("Apply Substraction");
+		Button applyThresholding = new Button("Apply Thresholding");
+		Button applyMultiThresholding = new Button("Apply MLT");
+		applyNeg.setMaxWidth(200);
+		applyNeg.setOnAction(action -> {
 			long time = drawing.negativeEffect();
 			timeLabel.setText("Negative Effect Time: " + toMs(time) + " ms");
 		});
-
-		operationBox.getChildren().addAll(apply);
+		applyYCbCr.setMaxWidth(200);
+		applyYCbCr.setOnAction(action -> {
+			long time = drawing.ycbcrEffect();
+			timeLabel.setText("YCbCr Effect Time: " + toMs(time) + " ms");
+		});
+		applyRGB.setMaxWidth(200);
+		applyRGB.setOnAction(action -> {
+			long time = drawing.rgbEffect();
+			timeLabel.setText("RGB Effect Time: " + toMs(time) + " ms");
+		});
+		applyDilation.setMaxWidth(200);
+		applyDilation.setOnAction(action -> {
+			long time = drawing.dilationEffect();
+			timeLabel.setText("Dilation Effect Time: " + toMs(time) + " ms");
+		});
+		applyErosion.setMaxWidth(200);
+		applyErosion.setOnAction(action -> {
+			long time = drawing.erosionEffect();
+			timeLabel.setText("Erosion Effect Time: " + toMs(time) + " ms");
+		});
+		applySubstraction.setMaxWidth(200);
+		applySubstraction.setOnAction(action -> {
+			File file = handleOpen();
+	        if (file != null) {
+	        	try {
+	        		BufferedImage bufferedImage = ImageIO.read(file);
+	                Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+	    			long time = drawing.substractionEffect(image);
+	    			timeLabel.setText("Substraction Effect Time: " + toMs(time) + " ms");
+	        	} catch (Exception e) {
+	        		timeLabel.setText("Error!");
+	        	}
+	        } else {
+	        	timeLabel.setText("Invalid image!");
+	        }
+		});
+		applyThresholding.setMaxWidth(200);
+		applyThresholding.setOnAction(action -> {
+			long time = drawing.thresholdingEffect();
+			timeLabel.setText("Thresholding Effect Time: " + toMs(time) + " ms");
+		});
+		applyMultiThresholding.setMaxWidth(200);
+		applyMultiThresholding.setOnAction(action -> {
+			long time = drawing.multilevelThresholdingEffect();
+			timeLabel.setText("Multilevel Thresholding Effect Time: " + toMs(time) + " ms");
+		});
+		operationBox.getChildren().addAll(applyNeg, applyYCbCr, applyRGB, applyDilation, applyErosion, applySubstraction, applyThresholding, applyMultiThresholding);
 	}
 	
 	/**
@@ -445,7 +495,7 @@ public class WindowLayout {
 	}
 	
 	/** Otevre FileChooser pro vyber obrazku */
-    private void handleOpen() {
+    protected File handleOpen() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Image");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
@@ -458,7 +508,12 @@ public class WindowLayout {
 
         // Zobrazeni oteviraciho dialogu
         File file = fileChooser.showOpenDialog(stage);
-
+        return file;
+    }
+	
+	/** Otevre FileChooser pro vyber obrazku */
+    private void handleOpenPrimaryImg() {
+    	File file = handleOpen();
         if (file != null) {
         	try {
         		BufferedImage bufferedImage = ImageIO.read(file);

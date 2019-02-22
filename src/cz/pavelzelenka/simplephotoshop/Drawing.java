@@ -1,5 +1,6 @@
 package cz.pavelzelenka.simplephotoshop;
 
+import cz.pavelzelenka.simplephotoshop.effects.AdditionalEffects;
 import cz.pavelzelenka.simplephotoshop.effects.BasicEffects;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -164,6 +165,140 @@ public class Drawing {
 		// uprava pracovniho obrazu
 		long start = System.nanoTime();
 		BasicEffects.blackAndWhiteEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		long end = System.nanoTime() - start;
+		// ulozeni pracovniho obrazu
+		activeCanvas.snapshot(null, working);
+		return end;
+	}
+	
+	/**
+	 * Efekt YCbCr
+	 * @return cas algoritmu
+	 */
+	public long ycbcrEffect() {
+		// ulozeni pracovniho obrazu pro vraceni o krok zpet
+		g.drawImage(working, 0, 0);
+		activeCanvas.snapshot(null, stepback);
+		undoEnable.set(true);
+		// uprava pracovniho obrazu
+		long start = System.nanoTime();
+		AdditionalEffects.ycbcrEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		long end = System.nanoTime() - start;
+		// ulozeni pracovniho obrazu
+		activeCanvas.snapshot(null, working);
+		return end;
+	}
+	
+	/**
+	 * Efekt odecteni obrazu
+	 * @return cas algoritmu
+	 */
+	public long substractionEffect(Image image) {
+		// ulozeni pracovniho obrazu pro vraceni o krok zpet
+		g.drawImage(working, 0, 0);
+		activeCanvas.snapshot(null, stepback);
+		undoEnable.set(true);
+		// uprava pracovniho obrazu
+		long start = System.nanoTime();
+		AdditionalEffects.subtraction(g, working, (int) working.getWidth(), (int) working.getHeight(), image);
+		long end = System.nanoTime() - start;
+		// ulozeni pracovniho obrazu
+		activeCanvas.snapshot(null, working);
+		return end;
+	}
+	
+	/**
+	 * Efekt prahovani
+	 * @return cas algoritmu
+	 */
+	public long thresholdingEffect() {
+		// ulozeni pracovniho obrazu pro vraceni o krok zpet
+		g.drawImage(working, 0, 0);
+		activeCanvas.snapshot(null, stepback);
+		undoEnable.set(true);
+		// uprava pracovniho obrazu
+		long start = System.nanoTime();
+		BasicEffects.blackAndWhiteEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		activeCanvas.snapshot(null, working);
+		AdditionalEffects.ycbcrEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		activeCanvas.snapshot(null, working);
+		AdditionalEffects.thresholdingEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), 125, true);
+		long end = System.nanoTime() - start;
+		// ulozeni pracovniho obrazu
+		activeCanvas.snapshot(null, working);
+		return end;
+	}
+	
+	/**
+	 * Efekt prahovani
+	 * @return cas algoritmu
+	 */
+	public long multilevelThresholdingEffect() {
+		// ulozeni pracovniho obrazu pro vraceni o krok zpet
+		g.drawImage(working, 0, 0);
+		activeCanvas.snapshot(null, stepback);
+		undoEnable.set(true);
+		// uprava pracovniho obrazu
+		long start = System.nanoTime();
+		BasicEffects.blackAndWhiteEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		activeCanvas.snapshot(null, working);
+		AdditionalEffects.ycbcrEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		activeCanvas.snapshot(null, working);
+		AdditionalEffects.multilevelThresholdingEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), 5, true);
+		long end = System.nanoTime() - start;
+		// ulozeni pracovniho obrazu
+		activeCanvas.snapshot(null, working);
+		return end;
+	}
+	
+	/**
+	 * Efekt RGB
+	 * @return cas algoritmu
+	 */
+	public long rgbEffect() {
+		// ulozeni pracovniho obrazu pro vraceni o krok zpet
+		g.drawImage(working, 0, 0);
+		activeCanvas.snapshot(null, stepback);
+		undoEnable.set(true);
+		// uprava pracovniho obrazu
+		long start = System.nanoTime();
+		AdditionalEffects.rgbEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
+		long end = System.nanoTime() - start;
+		// ulozeni pracovniho obrazu
+		activeCanvas.snapshot(null, working);
+		return end;
+	}
+	
+	/**
+	 * Efekt dilatace
+	 * @return cas algoritmu
+	 */
+	public long dilationEffect() {
+		// ulozeni pracovniho obrazu pro vraceni o krok zpet
+		g.drawImage(working, 0, 0);
+		activeCanvas.snapshot(null, stepback);
+		undoEnable.set(true);
+		// uprava pracovniho obrazu
+		long start = System.nanoTime();
+		AdditionalEffects.dilationEffect(g, stepback, working, (int) working.getWidth(), (int) working.getHeight());
+		long end = System.nanoTime() - start;
+		// ulozeni pracovniho obrazu
+		activeCanvas.snapshot(null, working);
+		return end;
+	}
+	
+	/**
+	 * Efekt eroze
+	 * @return cas algoritmu
+	 */
+	public long erosionEffect() {
+		// ulozeni pracovniho obrazu pro vraceni o krok zpet
+		g.drawImage(working, 0, 0);
+		activeCanvas.snapshot(null, stepback);
+		undoEnable.set(true);
+		// uprava pracovniho obrazu
+		long start = System.nanoTime();
+		AdditionalEffects.erosionEffect(g, stepback, working, (int) working.getWidth(), (int) working.getHeight());
 		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
