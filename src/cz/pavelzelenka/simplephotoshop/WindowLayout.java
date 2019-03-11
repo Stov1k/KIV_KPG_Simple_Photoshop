@@ -604,9 +604,10 @@ public class WindowLayout {
 		stage.setMinWidth(500);
 		stage.setMinHeight(480);
         stage.setTitle(About.TITLE);
-        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initModality(Modality.APPLICATION_MODAL);
        	stage.setResizable(true);
-        //stage.initOwner(stage);
+       	stage.initOwner(((MainSimplePhotoshop)this.application).primaryStage);
+       	stage.getIcons().add(IconType.APPLICATION_128.get());
         About about = new About();
         about.setApplication(this.application);
         Scene scene = new Scene(about.getParent(), 500, 480);

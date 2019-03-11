@@ -23,7 +23,7 @@ public class MainSimplePhotoshop extends Application {
 	public static Scene scene;
 	
 	/** Stage */
-	private Stage primaryStage;
+	protected Stage primaryStage;
 	
 	/** Vychozi rozvrzeni okna */
 	private WindowLayout wl;
