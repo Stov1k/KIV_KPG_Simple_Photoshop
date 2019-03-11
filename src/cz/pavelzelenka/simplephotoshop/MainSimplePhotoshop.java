@@ -2,6 +2,7 @@ package cz.pavelzelenka.simplephotoshop;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -20,6 +21,9 @@ public class MainSimplePhotoshop extends Application {
 	
 	/** Scena */
 	public static Scene scene;
+	
+	/** Stage */
+	private Stage primaryStage;
 	
 	/** Vychozi rozvrzeni okna */
 	private WindowLayout wl;
@@ -42,6 +46,7 @@ public class MainSimplePhotoshop extends Application {
 		primaryStage.setMinHeight(MIN_WINDOW_HEIGHT);
 		primaryStage.getIcons().add(IconType.APPLICATION_128.get());
 		wl = new WindowLayout(primaryStage);
+		wl.setApplication(this);
 		scene = new Scene(wl.get());
         primaryStage.setScene(scene);
         primaryStage.setWidth(800D);

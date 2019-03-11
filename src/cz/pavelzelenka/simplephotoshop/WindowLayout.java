@@ -7,6 +7,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import cz.pavelzelenka.simplephotoshop.effects.KernelMatrix;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,6 +16,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -37,6 +39,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -45,9 +48,12 @@ import javafx.stage.Stage;
  * @version 2018-03-24
  */
 public class WindowLayout {
-
+	
 	/** Hlavni stage aplikace */
 	private final Stage stage;
+	
+	/** Aplikace */
+	private Application application;
 	
 	/** Zakladni rozvrzeni okna */
 	private BorderPane borderPane;
@@ -116,14 +122,18 @@ public class WindowLayout {
 	public Parent getMenuBar() {
 		MenuBar menuBar = new MenuBar();
 		Menu fileMenu = new Menu("File");
+		Menu helpMenu = new Menu("Help");
 		MenuItem openMI = new MenuItem("Open");
 		openMI.setOnAction(action -> handleOpenPrimaryImg());
 		MenuItem saveAsMI = new MenuItem("Save As...");
 		saveAsMI.setOnAction(action -> handleSaveAs());
 		MenuItem closeMI = new MenuItem("Close");
 		closeMI.setOnAction(action -> handleClose());
+		MenuItem aboutMI = new MenuItem("About Simple Photoshop");
+		aboutMI.setOnAction(action -> handleAbout());
 		fileMenu.getItems().addAll(openMI, saveAsMI, new SeparatorMenuItem(), closeMI);
-		menuBar.getMenus().add(fileMenu);
+		helpMenu.getItems().addAll(aboutMI);
+		menuBar.getMenus().addAll(fileMenu, helpMenu);
 		return menuBar;
 	}
 	
@@ -587,5 +597,33 @@ public class WindowLayout {
         	}
         }
     }
+
+	/** Zobrazeni informaci o aplikaci */
+    protected void handleAbout() {
+		Stage stage = new Stage();
+		stage.setMinWidth(500);
+		stage.setMinHeight(480);
+        stage.setTitle(About.TITLE);
+        stage.initModality(Modality.WINDOW_MODAL);
+       	stage.setResizable(true);
+        //stage.initOwner(stage);
+        About about = new About();
+        about.setApplication(this.application);
+        Scene scene = new Scene(about.getParent(), 500, 480);
+        stage.setScene(scene);
+		stage.showAndWait();
+    }
+    
+	public Stage getStage() {
+		return stage;
+	}
 	
+	public Application getApplication() {
+		return application;
+	}
+
+	public void setApplication(Application application) {
+		this.application = application;
+	}
+    
 }
