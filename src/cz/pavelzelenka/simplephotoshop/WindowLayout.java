@@ -8,6 +8,8 @@ import javax.imageio.ImageIO;
 
 import cz.pavelzelenka.simplephotoshop.effects.KernelMatrix;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -62,17 +64,20 @@ public class WindowLayout {
 	/** Skupina prepinacu operaci */
 	private ToggleGroup operationsGroup = new ToggleGroup();
 	
-	/** Operace prevodu na cernobily obraz */
-	private ToggleButton bwTB = new ToggleButton("Black & White");
-	
-	/** Operace prevodu na tepany obraz */
-	private ToggleButton embossTB = new ToggleButton("Emboss");
-	
 	/** Operace vytvoreni mozaiky */
 	private ToggleButton mosaicTB = new ToggleButton("Mosaic");
 	
-	/** Operace vytvoreni negativu */
-	private ToggleButton negativeTB = new ToggleButton("Sandbox effects");
+	/** Ruzne operace */
+	private ToggleButton sandboxTB = new ToggleButton("Sandbox");
+	
+	/** Operace prevodu na YCbCr / RGB barevny model */ 
+	private ToggleButton ycbcrTB = new ToggleButton("YCbCr");
+	
+	/** Operace pragovani */ 
+	private ToggleButton thresholdingTB = new ToggleButton("Thresholding");
+	
+	/** Morfologicke operace */
+	private ToggleButton morphologyTB = new ToggleButton("Morphology");
 	
 	/** Operace vytvoreni sepie */
 	private ToggleButton sepiaTB = new ToggleButton("Sepia");
@@ -141,27 +146,31 @@ public class WindowLayout {
 		kernelTB.setToggleGroup(operationsGroup);
 		kernelTB.setMaxWidth(200);
 		
-		bwTB.setTooltip(new Tooltip("Black and White"));
-		bwTB.setToggleGroup(operationsGroup);
-		bwTB.setMaxWidth(200);
-		
-		embossTB.setTooltip(new Tooltip("Emboss"));
-		embossTB.setToggleGroup(operationsGroup);
-		embossTB.setMaxWidth(200);
-		
 		mosaicTB.setTooltip(new Tooltip("Mosaic"));
 		mosaicTB.setToggleGroup(operationsGroup);
 		mosaicTB.setMaxWidth(200);
 		
-		negativeTB.setTooltip(new Tooltip("Negative"));
-		negativeTB.setToggleGroup(operationsGroup);
-		negativeTB.setMaxWidth(200);
+		sandboxTB.setTooltip(new Tooltip("Sandbox"));
+		sandboxTB.setToggleGroup(operationsGroup);
+		sandboxTB.setMaxWidth(200);
+		
+		ycbcrTB.setTooltip(new Tooltip("YCbCr"));
+		ycbcrTB.setToggleGroup(operationsGroup);
+		ycbcrTB.setMaxWidth(200);
+		
+		thresholdingTB.setTooltip(new Tooltip("Thresholding"));
+		thresholdingTB.setToggleGroup(operationsGroup);
+		thresholdingTB.setMaxWidth(200);
+		
+		morphologyTB.setTooltip(new Tooltip("Morphology"));
+		morphologyTB.setToggleGroup(operationsGroup);
+		morphologyTB.setMaxWidth(200);
 		
 		sepiaTB.setTooltip(new Tooltip("Sepia"));
 		sepiaTB.setToggleGroup(operationsGroup);
 		sepiaTB.setMaxWidth(200);
 		
-		operationsPane.getItems().addAll(kernelTB, bwTB, embossTB, mosaicTB, negativeTB, sepiaTB);
+		operationsPane.getItems().addAll(kernelTB, mosaicTB, sandboxTB, ycbcrTB, thresholdingTB, morphologyTB, sepiaTB);
 		operationsPane.setOrientation(Orientation.VERTICAL);
 		operationsPane.setMaxWidth(5000D);
 		operationsPane.setMaxHeight(5000D);
@@ -182,14 +191,16 @@ public class WindowLayout {
 				operationBox.setStyle("-fx-base: #AAB8ED; -fx-background-color: #DAE8F0; -fx-border-color: #AAB8ED;");
 				if(newValue.equals(kernelTB)) {
 					kernelEffectOptions();
-				} else if(newValue.equals(bwTB)) {
-						blackWhiteEffectOptions();
-				} else if(newValue.equals(embossTB)) {
-					embossEffectOptions();
 				} else if(newValue.equals(mosaicTB)) {
 					mosaicEffectOptions();
-				} else if(newValue.equals(negativeTB)) {
-					negativeEffectOptions();
+				} else if(newValue.equals(sandboxTB)) {
+					sandboxEffectOptions();
+				} else if(newValue.equals(ycbcrTB)) {
+					ycbcrEffectOptions();
+				} else if(newValue.equals(morphologyTB)) {
+					morphologyEffectOptions();
+				} else if(newValue.equals(thresholdingTB)) {
+					thresholdingEffectOptions();
 				} else if(newValue.equals(sepiaTB)) {
 					sepiaEffectOptions();
 				} else {
@@ -236,36 +247,6 @@ public class WindowLayout {
 	}
 	
 	/**
-	 * Obsluha efektu cernobily
-	 */
-	public void blackWhiteEffectOptions() {
-		operationBox.getChildren().clear();
-		Button apply = new Button("Apply");
-		apply.setMaxWidth(200);
-		apply.setOnAction(action -> {
-			long time = drawing.blackAndWhiteEffect();
-			timeLabel.setText("B&W Effect Time: " + toMs(time) + " ms");
-		});
-
-		operationBox.getChildren().addAll(apply);
-	}
-	
-	/**
-	 * Obsluha efektu tepani
-	 */
-	public void embossEffectOptions() {
-		operationBox.getChildren().clear();
-		Button apply = new Button("Apply");
-		apply.setMaxWidth(200);
-		apply.setOnAction(action -> {
-			long time = drawing.embossEffect();
-			timeLabel.setText("Emboss Effect Time: " + toMs(time) + " ms");
-		});
-
-		operationBox.getChildren().addAll(apply);
-	}
-	
-	/**
 	 * Obsluha efektu mazaika
 	 */
 	public void mosaicEffectOptions() {
@@ -300,42 +281,18 @@ public class WindowLayout {
 	}
 	
 	/**
-	 * Obsluha efektu negativ
+	 * Obsluha ruznych efektu
 	 */
-	public void negativeEffectOptions() {
+	public void sandboxEffectOptions() {
 		operationBox.getChildren().clear();
 		Button applyNeg = new Button("Apply Negative");
-		Button applyYCbCr = new Button("Apply YCbCr");
-		Button applyRGB = new Button("Apply RGB");
-		Button applyDilation = new Button("Apply Dilation");
-		Button applyErosion = new Button("Apply Erosion");
 		Button applySubstraction = new Button("Apply Substraction");
-		Button applyThresholding = new Button("Apply Thresholding");
-		Button applyMultiThresholding = new Button("Apply MLT");
+		Button applyBW = new Button("Apply B&W");
+		Button applyEmboss = new Button("Apply Emboss");
 		applyNeg.setMaxWidth(200);
 		applyNeg.setOnAction(action -> {
 			long time = drawing.negativeEffect();
 			timeLabel.setText("Negative Effect Time: " + toMs(time) + " ms");
-		});
-		applyYCbCr.setMaxWidth(200);
-		applyYCbCr.setOnAction(action -> {
-			long time = drawing.ycbcrEffect();
-			timeLabel.setText("YCbCr Effect Time: " + toMs(time) + " ms");
-		});
-		applyRGB.setMaxWidth(200);
-		applyRGB.setOnAction(action -> {
-			long time = drawing.rgbEffect();
-			timeLabel.setText("RGB Effect Time: " + toMs(time) + " ms");
-		});
-		applyDilation.setMaxWidth(200);
-		applyDilation.setOnAction(action -> {
-			long time = drawing.dilationEffect();
-			timeLabel.setText("Dilation Effect Time: " + toMs(time) + " ms");
-		});
-		applyErosion.setMaxWidth(200);
-		applyErosion.setOnAction(action -> {
-			long time = drawing.erosionEffect();
-			timeLabel.setText("Erosion Effect Time: " + toMs(time) + " ms");
 		});
 		applySubstraction.setMaxWidth(200);
 		applySubstraction.setOnAction(action -> {
@@ -353,17 +310,95 @@ public class WindowLayout {
 	        	timeLabel.setText("Invalid image!");
 	        }
 		});
+		applyBW.setMaxWidth(200);
+		applyBW.setOnAction(action -> {
+			long time = drawing.blackAndWhiteEffect();
+			timeLabel.setText("B&W Effect Time: " + toMs(time) + " ms");
+		});
+		applyEmboss.setMaxWidth(200);
+		applyEmboss.setOnAction(action -> {
+			long time = drawing.embossEffect();
+			timeLabel.setText("Emboss Effect Time: " + toMs(time) + " ms");
+		});
+		operationBox.getChildren().addAll(applyNeg, applyBW, applyEmboss, applySubstraction);
+	}
+	
+	/**
+	 * Obsluha efektu YCbCr / RGB
+	 */
+	public void ycbcrEffectOptions() {
+		operationBox.getChildren().clear();
+		Button applyYCbCr = new Button("RGB to YCbCr");
+		Button applyRGB = new Button("YCbCr to RGB");
+		applyYCbCr.setMaxWidth(200);
+		applyYCbCr.setOnAction(action -> {
+			long time = drawing.ycbcrEffect();
+			timeLabel.setText("YCbCr Effect Time: " + toMs(time) + " ms");
+		});
+		applyRGB.setMaxWidth(200);
+		applyRGB.setOnAction(action -> {
+			long time = drawing.rgbEffect();
+			timeLabel.setText("RGB Effect Time: " + toMs(time) + " ms");
+		});
+		operationBox.getChildren().addAll(applyYCbCr, applyRGB);
+	}
+	
+	/**
+	 * Obsluha efektu prahovani
+	 */
+	public void thresholdingEffectOptions() {
+		operationBox.getChildren().clear();
+		int defaultValue = 125;
+		Label thresholdLabel = new Label("Threshold (" + String.format("%3d", defaultValue) + ")");
+		Slider threshold = new Slider(); 
+		threshold.setMin(0);
+		threshold.setMax(255);
+		threshold.setValue(defaultValue);
+		threshold.setShowTickLabels(false);
+		threshold.setShowTickMarks(false);
+		threshold.setMajorTickUnit(50);
+		threshold.setMinorTickCount(2);
+		threshold.setBlockIncrement(1);
+		threshold.valueProperty().addListener(new ChangeListener<Object>() {
+            @Override
+            public void changed(ObservableValue<?> arg0, Object arg1, Object arg2) {
+            	thresholdLabel.textProperty().setValue("Threshold (" + String.format("%3d", (int) threshold.getValue()) + ")");
+
+            }
+        });
+		Button applyThresholding = new Button("Apply Thresholding");
+		Button applyMultiThresholding = new Button("Apply MLT");
 		applyThresholding.setMaxWidth(200);
 		applyThresholding.setOnAction(action -> {
-			long time = drawing.thresholdingEffect();
+			long time = drawing.thresholdingEffect((int)(threshold.getValue()), true);
 			timeLabel.setText("Thresholding Effect Time: " + toMs(time) + " ms");
 		});
 		applyMultiThresholding.setMaxWidth(200);
 		applyMultiThresholding.setOnAction(action -> {
-			long time = drawing.multilevelThresholdingEffect();
+			long time = drawing.multilevelThresholdingEffect((int)(threshold.getValue()));
 			timeLabel.setText("Multilevel Thresholding Effect Time: " + toMs(time) + " ms");
 		});
-		operationBox.getChildren().addAll(applyNeg, applyYCbCr, applyRGB, applyDilation, applyErosion, applySubstraction, applyThresholding, applyMultiThresholding);
+		operationBox.getChildren().addAll(thresholdLabel, threshold, applyThresholding, applyMultiThresholding);
+	}
+	
+	/**
+	 * Obsluha morfologickych operaci
+	 */
+	public void morphologyEffectOptions() {
+		operationBox.getChildren().clear();
+		Button applyDilation = new Button("Apply Dilation");
+		Button applyErosion = new Button("Apply Erosion");
+		applyDilation.setMaxWidth(200);
+		applyDilation.setOnAction(action -> {
+			long time = drawing.dilationEffect();
+			timeLabel.setText("Dilation Effect Time: " + toMs(time) + " ms");
+		});
+		applyErosion.setMaxWidth(200);
+		applyErosion.setOnAction(action -> {
+			long time = drawing.erosionEffect();
+			timeLabel.setText("Erosion Effect Time: " + toMs(time) + " ms");
+		});
+		operationBox.getChildren().addAll(applyDilation, applyErosion);
 	}
 	
 	/**

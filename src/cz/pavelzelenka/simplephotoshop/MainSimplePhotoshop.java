@@ -16,7 +16,7 @@ public class MainSimplePhotoshop extends Application {
 	/** Minimalni sirka okna aplikace */
 	public static final double MIN_WINDOW_WIDTH = 400D;
 	/** Minimalni vyska okna aplikace */
-	public static final double MIN_WINDOW_HEIGHT = 600D;
+	public static final double MIN_WINDOW_HEIGHT = 620D;
 	
 	/** Scena */
 	public static Scene scene;
@@ -44,8 +44,8 @@ public class MainSimplePhotoshop extends Application {
 		wl = new WindowLayout(primaryStage);
 		scene = new Scene(wl.get());
         primaryStage.setScene(scene);
-        primaryStage.setWidth(730D);
-        primaryStage.setHeight(600D);
+        primaryStage.setWidth(800D);
+        primaryStage.setHeight(640D);
         primaryStage.show();
 	}
 	

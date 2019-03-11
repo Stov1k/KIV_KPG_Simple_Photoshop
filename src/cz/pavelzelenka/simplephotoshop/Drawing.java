@@ -211,7 +211,7 @@ public class Drawing {
 	 * Efekt prahovani
 	 * @return cas algoritmu
 	 */
-	public long thresholdingEffect() {
+	public long thresholdingEffect(int setlevel, boolean luminance) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
@@ -222,7 +222,7 @@ public class Drawing {
 		activeCanvas.snapshot(null, working);
 		AdditionalEffects.ycbcrEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
 		activeCanvas.snapshot(null, working);
-		AdditionalEffects.thresholdingEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), 125, true);
+		AdditionalEffects.thresholdingEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), setlevel, luminance);
 		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
@@ -233,7 +233,7 @@ public class Drawing {
 	 * Efekt prahovani
 	 * @return cas algoritmu
 	 */
-	public long multilevelThresholdingEffect() {
+	public long multilevelThresholdingEffect(int levels) {
 		// ulozeni pracovniho obrazu pro vraceni o krok zpet
 		g.drawImage(working, 0, 0);
 		activeCanvas.snapshot(null, stepback);
@@ -244,7 +244,7 @@ public class Drawing {
 		activeCanvas.snapshot(null, working);
 		AdditionalEffects.ycbcrEffect(g, working, (int) working.getWidth(), (int) working.getHeight());
 		activeCanvas.snapshot(null, working);
-		AdditionalEffects.multilevelThresholdingEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), 5, true);
+		AdditionalEffects.multilevelThresholdingEffect(g, working, (int) working.getWidth(), (int) working.getHeight(), levels, true);
 		long end = System.nanoTime() - start;
 		// ulozeni pracovniho obrazu
 		activeCanvas.snapshot(null, working);
