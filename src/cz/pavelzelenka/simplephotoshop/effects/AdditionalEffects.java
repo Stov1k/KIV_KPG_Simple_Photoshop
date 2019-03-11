@@ -18,9 +18,10 @@ public class AdditionalEffects {
 			for (int y = 0; y < height; y++) {
 				Color oldColor = reader.getColor(x, y);
 				Color newColor = newReader.getColor(x, y);
-				if(oldColor.equals(newColor)) {
-					writer.setColor(x, y, Color.BLACK);
-				}
+				int r_diff = Math.abs((int)(oldColor.getRed()*255) - (int)(newColor.getRed()*255));
+				int g_diff = Math.abs((int)(oldColor.getGreen()*255) - (int)(newColor.getGreen()*255));
+				int b_diff = Math.abs((int)(oldColor.getBlue()*255) - (int)(newColor.getBlue()*255));
+				writer.setColor(x, y, Color.rgb(r_diff, g_diff, b_diff));
 			}
 		}
 
