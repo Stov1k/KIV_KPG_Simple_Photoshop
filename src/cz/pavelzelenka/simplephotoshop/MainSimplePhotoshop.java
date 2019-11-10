@@ -32,13 +32,13 @@ public class MainSimplePhotoshop extends Application {
 	 * Hlavni metoda aplikace
 	 * @param args argumenty pri spusteni
 	 */
-    public static void main(String[] args) {
-        launch(args);
-    }
+	public static void main(String[] args) {
+		launch(args);
+	}
 	
-    /**
-     * Spusteni GUI aplikace
-     */
+	/**
+	 * Spusteni GUI aplikace
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle(WINDOW_TITLE);
