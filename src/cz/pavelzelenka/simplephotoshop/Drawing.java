@@ -61,13 +61,13 @@ public class Drawing {
 		initializeWritableImage();
 		
 		canvas.setWidth(getImageWidth());
-        canvas.setHeight(getImageHeight());
+		canvas.setHeight(getImageHeight());
         
-        width = new SimpleDoubleProperty();
-        height = new SimpleDoubleProperty();
+		width = new SimpleDoubleProperty();
+		height = new SimpleDoubleProperty();
         
-        width.bind(canvas.widthProperty());
-        height.bind(canvas.heightProperty());
+		width.bind(canvas.widthProperty());
+		height.bind(canvas.heightProperty());
 	}
 	
 	/**
