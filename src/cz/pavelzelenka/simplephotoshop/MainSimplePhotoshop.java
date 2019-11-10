@@ -48,10 +48,10 @@ public class MainSimplePhotoshop extends Application {
 		wl = new WindowLayout(primaryStage);
 		wl.setApplication(this);
 		scene = new Scene(wl.get());
-        primaryStage.setScene(scene);
-        primaryStage.setWidth(800D);
-        primaryStage.setHeight(640D);
-        primaryStage.show();
+		primaryStage.setScene(scene);
+		primaryStage.setWidth(800D);
+		primaryStage.setHeight(640D);
+		primaryStage.show();
 	}
 	
 }
