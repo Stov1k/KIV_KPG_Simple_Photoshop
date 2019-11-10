@@ -58,9 +58,9 @@ public class About {
 		HBox.setHgrow(title, Priority.ALWAYS);
 		HBox.setHgrow(logo, Priority.NEVER);
 		AnchorPane.setTopAnchor(hbox, 5D);
-	    AnchorPane.setLeftAnchor(hbox, 5D);
-	    AnchorPane.setRightAnchor(hbox, 5D);
-	    AnchorPane.setBottomAnchor(hbox, 5D);
+		AnchorPane.setLeftAnchor(hbox, 5D);
+		AnchorPane.setRightAnchor(hbox, 5D);
+		AnchorPane.setBottomAnchor(hbox, 5D);
 		return anchorPane;
 	}
 	
@@ -69,9 +69,9 @@ public class About {
 		AnchorPane anchorPane = new AnchorPane();
 		anchorPane.getChildren().add(tabPane);
 		AnchorPane.setTopAnchor(tabPane, 0D);
-	    AnchorPane.setLeftAnchor(tabPane, 0D);
-	    AnchorPane.setRightAnchor(tabPane, 0D);
-	    AnchorPane.setBottomAnchor(tabPane, 0D);
+		AnchorPane.setLeftAnchor(tabPane, 0D);
+		AnchorPane.setRightAnchor(tabPane, 0D);
+		AnchorPane.setBottomAnchor(tabPane, 0D);
 		return anchorPane;
 	}
 	
@@ -84,9 +84,9 @@ public class About {
 		vbox.getChildren().add(getAuthotTextFlow());
 		anchorPane.getChildren().add(vbox);
 		AnchorPane.setTopAnchor(vbox, 10D);
-	    AnchorPane.setLeftAnchor(vbox, 10D);
-	    AnchorPane.setRightAnchor(vbox, 10D);
-	    AnchorPane.setBottomAnchor(vbox, 10D);
+		AnchorPane.setLeftAnchor(vbox, 10D);
+		AnchorPane.setRightAnchor(vbox, 10D);
+		AnchorPane.setBottomAnchor(vbox, 10D);
 		tab.setContent(anchorPane);
 		tabPane.getTabs().add(tab);
 	}
